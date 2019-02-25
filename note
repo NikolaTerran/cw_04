@@ -1,0 +1,36 @@
+1) Dilation
+   (x,y,z) -->          --> (ax,by,cz)
+	       D(a,b,c)
+
+2) translation
+   (x,y,z) --> T(a,b,c) --> (x+a,y+b,c+z)
+
+Dilation
+ [a 0 0]   [x]   [ax]
+ [0 b 0] * [y] = [by]
+ [0 0 c]   [z]   [cz]
+
+Translation
+ [1 0 0 a] * [x] = [x + a]
+ [0 1 0 b]   [y]   [y + b]
+ [0 0 1 c]   [z]   [z + c]
+ [0 0 0 1]   [1]   [1]
+
+Rotation
+(x,y) -> (?,?)
+
+x = rcos(theta)
+x1 = rcos(theta + c)
+y = rsin(theta)
+y1 = rsin(theta + c)
+
+x1 = xcos(theta) - ysin(theta)
+y1 = ycos(theta) + xsin(theta)
+
+Rotation
+[cos(theta) -sin(theta) 0 0]     [x]   [xcos(theta) - ysin(theta)]
+[sin(theta) cos(theta) 0 0]      [y] = [ycos(theta) + xsin(theta)]
+[0 0 1 0]                        [z]   [ z ]
+[0 0 0 1]                     *  [1]   [ 1 ]
+ 
+
