@@ -69,12 +69,12 @@ struct Matrix edge;
 edge.row = 7;
 //edge = addedge(edge,0,0,0,500,500,0,255000000);
 //edge = addedge(edge,0,500,0,500,0,0,255000000);
-/*
+
+int x;
+for(x = 0; x < 251; x++){
 edge = addedge(edge,0,250,         0,
-						  500,0,  0,  255,000,000);
-*/
-edge = addedge(edge,10,20,         0,
-						  500,20,  0,  255,000,000);
+						  500 - x,0,  0,  x,000,000);		
+	}
 /*
 edge = addpoint(edge,0,0,0,255000000);
 edge = addpoint(edge,0,500,0,255000000);

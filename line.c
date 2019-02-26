@@ -5,42 +5,61 @@
 void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, int y3, int octants, int color[], double m){
 	
 	double slope;
-	
+	double slopea;
+				slopea = ((double) y1 - (double)y3 + 1)/((double)x3 - (double)x1 + 1);
+				double slopeb;
+				slopeb = ((double) y1 - (double)y3)/((double)x3 - (double)x1 + 1);
 	switch(octants){
 			case 1: 
-				double slope1 = ((double) y1 - y3 + 1)/((double)x3 - x1 )
-				double slope2 = ((double) y
-	while(x3 != x2 || y3 != y2){
-		slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
-							    db("y3",y3);
+				db("sa",slopea);
+				db("sb",slopeb);
+				
+				if(abs(slopeb - m) <= abs(slopea - m)){
+					x3 += 1;
+				}else{
+					y3 -= 1;
+					x3 += 1;
+				}
+				break;
+		}
+	
+	db("y1",y1);
+						db("y3",y3);
 						db("x3",x3);
-											    db("y1",y3);
-						db("x1",x3);
+						db("x1",x1);
+		
 		switch(octants){
 			case 1: 
-					if(slope > m){
+				while(x3 != x2 || y3 != y2){
+				slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
+					db("octants",(double)octants);
+					if(slope >= m){
 						db("slope",slope);
 						db("m",m);
-						sleep(5);
-					    //db("y3",y3);
+						
+					   // db("y3",y3);
 						//db("x3",x3);
+						
 						array[y3][x3][0] = color[0];
 						array[y3][x3][1] = color[1];
 						array[y3][x3][2] = color[2];
 						x3 ++;
 						//y3 --;
+						//sleep(5);
 					}else{
 					    db("slope",slope);
 					    db("m",m);
-					    sleep(5);
-					    //db("y3",y3);
-						//db("x3",x3);
+					    
+					    db("y3",y3);
+						db("x3",x3);
+						//sleep(5);
 						array[y3][x3][0] = color[0];
 						array[y3][x3][1] = color[1];
 						array[y3][x3][2] = color[2];
 						x3 ++;
 						y3 --;
-					}		
+					}
+				}		
 			break;
 			case 2: //up right
 					if(slope > m){
@@ -85,7 +104,7 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 					}
 			break;
 			case 4: //left up
-					if(slope < m){
+					if(slope <= m){
 						//db("slope",slope);
 						//db("y3",y3);
 						//db("x3",x3);
@@ -187,7 +206,7 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 					}
 			break;
 		}
-	}
+	
 }
 
 int drawLine(int array[][500][3], int x1 , int y1, int x2, int y2, int color[]){
@@ -232,7 +251,7 @@ int drawLine(int array[][500][3], int x1 , int y1, int x2, int y2, int color[]){
 					}
 				}
 				
-				//db("octants",(double)octants);
+				db("octants",(double)octants);
 				
 				array[y1][x1][0] = color[0];
 				array[y1][x1][1] = color[1];
