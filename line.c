@@ -1,67 +1,37 @@
 #include "engine.h"
 
-
-
 void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, int y3, int octants, int color[], double m){
 	
 	double slope;
-	double slopea;
-				slopea = ((double) y1 - (double)y3 + 1)/((double)x3 - (double)x1 + 1);
-				double slopeb;
-				slopeb = ((double) y1 - (double)y3)/((double)x3 - (double)x1 + 1);
-	switch(octants){
-			case 1: 
-				db("sa",slopea);
-				db("sb",slopeb);
-				
-				if(abs(slopeb - m) <= abs(slopea - m)){
-					x3 += 1;
-				}else{
-					y3 -= 1;
-					x3 += 1;
-				}
-				break;
-		}
-	
-	db("y1",y1);
-						db("y3",y3);
-						db("x3",x3);
-						db("x1",x1);
 		
 		switch(octants){
 			case 1: 
-				while(x3 != x2 || y3 != y2){
-				slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
-					db("octants",(double)octants);
-					if(slope >= m){
-						db("slope",slope);
-						db("m",m);
-						
-					   // db("y3",y3);
+			while(x3 <= x2){
+					slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
+					if(slope > m){
+						//db("slope",slope);
+					    //db("y3",y3);
 						//db("x3",x3);
-						
 						array[y3][x3][0] = color[0];
 						array[y3][x3][1] = color[1];
 						array[y3][x3][2] = color[2];
 						x3 ++;
 						//y3 --;
-						//sleep(5);
 					}else{
-					    db("slope",slope);
-					    db("m",m);
-					    
-					    db("y3",y3);
-						db("x3",x3);
-						//sleep(5);
+					    //db("slope",slope);
+					    //db("y3",y3);
+						//db("x3",x3);
 						array[y3][x3][0] = color[0];
 						array[y3][x3][1] = color[1];
 						array[y3][x3][2] = color[2];
 						x3 ++;
 						y3 --;
 					}
-				}		
+			}		
 			break;
 			case 2: //up right
+			while(y3 >= y2){
+					slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
 					if(slope > m){
 						//db("slope",slope);
 						//db("y3",y3);
@@ -80,9 +50,12 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 						array[y3][x3][2] = color[2];
 						//x3 ++;
 						y3 --;
-					}		
+					}	
+			}	
 			break;
 			case 3: //up left
+			while(y3 >= y2){
+					slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
 					if(slope < m){
 						//db("slope",slope);
 						//db("y3",y3);
@@ -102,9 +75,12 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 						//x3 --;
 						y3 --;
 					}
+			}
 			break;
 			case 4: //left up
-					if(slope <= m){
+			while(x3 >= x2){
+					slope = ((double)y1 - (double)y3)/((double)x3 - (double)x1);
+					if(slope < m){
 						//db("slope",slope);
 						//db("y3",y3);
 						//db("x3",x3);
@@ -123,6 +99,7 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 						y3 --;
 						x3 --;
 					}
+			}
 			break;
 			case 5: //left down
 					if(slope > m){
@@ -206,8 +183,8 @@ void line_helper(int array[][500][3], int x1, int y1, int x2, int y2, int x3, in
 					}
 			break;
 		}
-	
-}
+	}
+
 
 int drawLine(int array[][500][3], int x1 , int y1, int x2, int y2, int color[]){
 	int octants;
@@ -251,14 +228,14 @@ int drawLine(int array[][500][3], int x1 , int y1, int x2, int y2, int color[]){
 					}
 				}
 				
-				db("octants",(double)octants);
+				//db("octants",(double)octants);
 				
 				array[y1][x1][0] = color[0];
 				array[y1][x1][1] = color[1];
 				array[y1][x1][2] = color[2];
 				//db("lol",(double)octants);
 				switch(octants){
-						case 1: line_helper(array,x1,y1,x2,y2,x1,y1,octants,color,m);
+						case 1: line_helper(array,x1,y1,x2,y2,x1 + 1,y1 - 1,octants,color,m);
 						break;
 						case 2: line_helper(array,x1,y1,x2,y2,x1 + 1,y1 - 1,octants,color,m);
 						break;
@@ -266,13 +243,13 @@ int drawLine(int array[][500][3], int x1 , int y1, int x2, int y2, int color[]){
 						break;
 						case 4: line_helper(array,x1,y1,x2,y2,x1 - 1,y1 - 1,octants,color,m);//left up
 						break;
-						case 5: line_helper(array,x1,y1,x2,y2,x1 - 1,y1 + 1,octants,color,m);//left down
+						case 5: line_helper(array,x2,y2,x1,y1,x2 + 1,y2 - 1,1,color,m);//left down
 						break;
-						case 6: line_helper(array,x1,y1,x2,y2,x1 - 1,y1 + 1,octants,color,m);//down left
+						case 6: line_helper(array,x2,y2,x1,y1,x2 + 1,y2 - 1,2,color,m);//down left
 						break;
-						case 7: line_helper(array,x1,y1,x2,y2,x1 + 1,y1 + 1,octants,color,m);//down right
+						case 7: line_helper(array,x2,y2,x1,y1,x2 - 1,y2 - 1,3,color,m);//down right
 						break;
-						case 8: line_helper(array,x1,y1,x2,y2,x1 + 1,y1 + 1,octants,color,m);// right down
+						case 8: line_helper(array,x2,y2,x1,y1,x2 - 1,y2 - 1,4,color,m);// right down
 						break;
 						}
 	}

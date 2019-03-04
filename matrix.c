@@ -166,25 +166,21 @@ void mx_free(struct Matrix mx){
 }
 
 //defaut 7 row Matrix
-struct Matrix addedge(struct Matrix mx, double a, double b, double c, double d, double e, double f, double red, double green, double blue){
-	double arr[7];
-	double brr[7];
+struct Matrix addedge(struct Matrix mx, double a, double b, double c, double d, double e, double f){
+	double arr[4];
+	double brr[4];
 	arr[0] = a;
 	arr[1] = b;
 	arr[2] = c;
-	arr[3] = red;
-	arr[4] = green;
-	arr[5] = blue;
-	arr[6] = 1;
+	arr[3] = 1;
+
 	brr[0] = d;
 	brr[1] = e;
 	brr[2] = f;
-	brr[3] = red;
-	brr[4] = green;
-	brr[5] = blue;
-	brr[6] = 1;
-	mx = mx_qac(mx,arr,7);
-	mx = mx_qac(mx,brr,7);
+	brr[3] = 1;
+
+	mx = mx_qac(mx,arr,4);
+	mx = mx_qac(mx,brr,4);
 	return mx;
 }
 
@@ -214,6 +210,8 @@ struct Matrix mx_rmc(struct Matrix mx){
 	return my;
 }
 
+
+//never use point matrix for this
 void mx_export(struct Matrix mx){
 	int fd, i, j , k;
 	int array[500][500][3];
@@ -224,25 +222,26 @@ void mx_export(struct Matrix mx){
 	initialize(array,rgb);
 	fd = open("image.ppm", O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	
-	
+	//initialize color
+		rgb[0] = 0;
+		rgb[1] = 0;
+		rgb[2] = 0;
+
 	while(mx.col >= 1){
-		int red = (int)mx_get(mx,3,0);
-		int green = (int)mx_get(mx,4,0);
-		int blue = (int)mx_get(mx,5,0);
-		rgb[0] = red;
-		rgb[1] = green;
-		rgb[2] = blue;
+
 		/*
 		drawLine(array,0,0,500,0,rgb);
 		drawLine(array,0,0,500,500,rgb);
 		*/
-
-		if((int)mx_get(mx,6,0) == 0){
-			drawLine(array, (int)mx_get(mx,0,0), (int)mx_get(mx,1,0), (int)mx_get(mx,0,0), (int)mx_get(mx,1,0), rgb);
+		if((int)mx_get(mx,3,0) == 0 && (int)mx_get(mx,3,1)){
+			drawLine(array, (int)mx_get(mx,0,0), (int)mx_get(mx,1,0), (int)mx_get(mx,0,1), (int)mx_get(mx,1,1), rgb);
+			mx = mx_rmc(mx);
 			mx = mx_rmc(mx);
 		}else{
-			drawLine(array, (int)mx_get(mx,0,0), (int)mx_get(mx,1,0), (int)mx_get(mx,0,1), (int)mx_get(mx,1,1), rgb);
-			
+			drawLine(array, (int)mx_get(mx,0,0) + (int)mx_get(mx,2,0)/2,
+						    (int)mx_get(mx,1,0) - (int)mx_get(mx,2,0)/4,
+						    (int)mx_get(mx,0,1) + (int)mx_get(mx,2,1)/2,
+						    (int)mx_get(mx,1,1) - (int)mx_get(mx,2,1)/4, rgb);
 			mx = mx_rmc(mx);
 			mx = mx_rmc(mx);
 		}
@@ -250,4 +249,53 @@ void mx_export(struct Matrix mx){
 	}
 	
 	push(array,fd);
+}
+
+//create a transformation matrix 4 x 4
+struct Matrix mx_dilation(struct Matrix mx, double factor){
+	struct Matrix id = mx_iden(mx,1);
+	
+	
+	int i = 0;
+	while(i < id.col){
+		id = mx_set(id, i, i, factor);
+		i++;
+	}
+	return id;
+}
+
+struct Matrix mx_transform(struct Matrix mx, double x, double y, double z){
+	struct Matrix id = mx_iden(mx,1);
+
+	int i = 0;
+
+	id = mx_set(id,0,3,x);
+	id = mx_set(id,1,3,y);
+	id = mx_set(id,2,3,z);
+
+	return id;
+
+}
+
+//axis == x,y
+struct Matrix mx_rotate(struct Matrix mx, char axis, double radian){
+	struct Matrix id;
+	id = mx_iden(mx,1);
+	if(axis == 'x'){
+		id = mx_set(id,1,1,cos(radian));
+		id = mx_set(id,1,2,-sin(radian));
+		id = mx_set(id,2,1,sin(radian));
+		id = mx_set(id,2,2,cos(radian));
+	}else if(axis == 'y'){
+		id = mx_set(id,0,0,cos(radian));
+		id = mx_set(id,0,2,sin(radian));
+		id = mx_set(id,2,0,-sin(radian));
+		id = mx_set(id,2,2,cos(radian));
+	}else{
+		id = mx_set(id,0,0,cos(radian));
+		id = mx_set(id,1,0,sin(radian));
+		id = mx_set(id,0,1,-sin(radian));
+		id = mx_set(id,1,1,cos(radian));
+	}
+	return id;
 }
