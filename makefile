@@ -1,5 +1,5 @@
 all: main.o matrix.o parser.o line.o util.o random.o engine.h
-	gcc -lm main.o matrix.o line.o util.o random.o
+	gcc main.o matrix.o line.o util.o random.o -lm
 	gcc -o parser parser.o
 
 main.o: main.c engine.h
